@@ -25,7 +25,7 @@ def main():
         label = model.predict(np.expand_dims(np.asarray(img), 0))
         print(label)
 
-        if label[0][0] < 1:
+        if round(label[0][0]) == 1:
             i = 0
         else:
             i = 1

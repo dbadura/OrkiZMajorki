@@ -21,14 +21,11 @@ def splitDataset(base_dir, trainCountGap, valCountGap, trainCountOther, valCount
     os.mkdir(train_dir)
     validation_dir = os.path.join(base_dir, 'validation')
     os.mkdir(validation_dir)
-    test_dir = os.path.join(base_dir, 'test')
-    os.mkdir(test_dir)
 
     # Other
     label = 'wagon_gap'
     os.mkdir(os.path.join(train_dir, label))
     os.mkdir(os.path.join(validation_dir, label))
-    os.mkdir(os.path.join(test_dir, label))
 
     dir_path = os.path.join(base_dir, label)
 
@@ -40,13 +37,12 @@ def splitDataset(base_dir, trainCountGap, valCountGap, trainCountOther, valCount
     for i in range(trainCountGap):
         shutil.copyfile(os.path.join(base_dir, label, files[i]), os.path.join(train_dir, label, files[i]))
     for i in range(valCountGap):
-        shutil.copyfile(os.path.join(base_dir, label, files[i]), os.path.join(test_dir, label, files[i]))
+        shutil.copyfile(os.path.join(base_dir, label, files[i]), os.path.join(validation_dir, label, files[i]))
 
     # Wagon gap
     label = 'other'
     os.mkdir(os.path.join(train_dir, label))
     os.mkdir(os.path.join(validation_dir, label))
-    os.mkdir(os.path.join(test_dir, label))
 
     dir_path = os.path.join(base_dir, label)
 
@@ -58,7 +54,7 @@ def splitDataset(base_dir, trainCountGap, valCountGap, trainCountOther, valCount
     for i in range(trainCountOther):
         shutil.copyfile(os.path.join(base_dir, label, files[i]), os.path.join(train_dir, label, files[i]))
     for i in range(valCountOther):
-        shutil.copyfile(os.path.join(base_dir, label, files[i]), os.path.join(test_dir, label, files[i]))
+        shutil.copyfile(os.path.join(base_dir, label, files[i]), os.path.join(validation_dir, label, files[i]))
 
     return train_dir, validation_dir
 

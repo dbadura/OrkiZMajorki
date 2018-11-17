@@ -12,45 +12,65 @@ from random import shuffle
 from keras.utils import to_categorical
 
 model_name = 'uic.h5'
-original_dataset_dir = cwd = os.getcwd() + '\\data\\train'
-base_dir = os.getcwd() + '\\data\\uip'
+import os
+import shutil
+import matplotlib.pyplot as plt
+from keras import layers
+from keras import models
+from keras import optimizers
+from keras.preprocessing import image
+from keras.preprocessing.image import ImageDataGenerator
+import cv2
+import numpy as np
+import argparse
+from random import shuffle
+from keras.utils import to_categorical
 
-_validation_dir = os.getcwd() + '\\data\\uip\\validation'
-_train_dir = os.getcwd() + '\\data\\uip\\train'
-_test_dir = os.getcwd() + '\\data\\uip\\test'
+model_name = 'uic_8.h5'
 
 
-def splitDataset(trainCount=200, valCount=68, testCount=0):
+def splitDataset(base_dir, trainCountGap, valCountGap, trainCountOther, valCountOther):
     # Make separate directories for train/test/validation
     train_dir = os.path.join(base_dir, 'train')
     os.mkdir(train_dir)
     validation_dir = os.path.join(base_dir, 'validation')
     os.mkdir(validation_dir)
-    test_dir = os.path.join(base_dir, 'test')
-    os.mkdir(test_dir)
 
-    # Make separate directories for categories
-    labels = ['UIC', 'notUIC']
-    for label in labels:
-        os.mkdir(os.path.join(train_dir, label))
-        os.mkdir(os.path.join(validation_dir, label))
-        os.mkdir(os.path.join(test_dir, label))
+    # Other
+    label = 'uic'
+    os.mkdir(os.path.join(train_dir, label))
+    os.mkdir(os.path.join(validation_dir, label))
 
-        dir_path = os.path.join(base_dir, label)
+    dir_path = os.path.join(base_dir, label)
 
-        files = []
-        for file in os.listdir(dir_path):
-            files.append(file)
+    files = []
+    for file in os.listdir(dir_path):
+        files.append(file)
 
-        shuffle(files)
-        for i in range(trainCount):
-            shutil.copyfile(os.path.join(base_dir, label, files[i]), os.path.join(train_dir, label, files[i]))
-        for i in range(testCount):
-            shutil.copyfile(os.path.join(base_dir, label, files[i]), os.path.join(test_dir, label, files[i]))
-        for i in range(valCount):
-            shutil.copyfile(os.path.join(base_dir, label, files[i]), os.path.join(validation_dir, label, files[i]))
+    shuffle(files)
+    for i in range(trainCountGap):
+        shutil.copyfile(os.path.join(base_dir, label, files[i]), os.path.join(train_dir, label, files[i]))
+    for i in range(valCountGap):
+        shutil.copyfile(os.path.join(base_dir, label, files[i]), os.path.join(validation_dir, label, files[i]))
 
-    return train_dir, test_dir, validation_dir
+    # Wagon gap
+    label = 'not_uic'
+    os.mkdir(os.path.join(train_dir, label))
+    os.mkdir(os.path.join(validation_dir, label))
+
+    dir_path = os.path.join(base_dir, label)
+
+    files = []
+    for file in os.listdir(dir_path):
+        files.append(file)
+
+    shuffle(files)
+    for i in range(trainCountOther):
+        shutil.copyfile(os.path.join(base_dir, label, files[i]), os.path.join(train_dir, label, files[i]))
+    for i in range(valCountOther):
+        shutil.copyfile(os.path.join(base_dir, label, files[i]), os.path.join(validation_dir, label, files[i]))
+
+    return train_dir, validation_dir
 
 
 def buildNetwork(handleOverfitting=False):
@@ -130,38 +150,11 @@ def drawPlots(history, handleOverfitting=False):
     plt.show()
 
 
-def showAugumentationExamples():
-    datagen = ImageDataGenerator(
-        rotation_range=40,
-        width_shift_range=0.2,
-        height_shift_range=0.2,
-        shear_range=0.2,
-        zoom_range=0.2,
-        horizontal_flip=True,
-        fill_mode='nearest')
-
-    fnames = [os.path.join(_train_dir + "\\cats", fname) for
-              fname in os.listdir(_train_dir + "\\cats")]
-    img_path = fnames[3]
-    img = image.load_img(img_path, target_size=(150, 150))
-    x = image.img_to_array(img)
-    x = x.reshape((1,) + x.shape)
-
-    i = 0
-    for batch in datagen.flow(x, batch_size=1):
-        plt.figure(i)
-        imgplot = plt.imshow(image.array_to_img(batch[0]))
-        i += 1
-        if i % 4 == 0:
-            break
-    plt.show()
-
-
 def loadTestData(path):
     labels = []
     images = []
 
-    dirs = ['wagon_gap', 'other']
+    dirs = ['uic', 'not_uic']
     for i, label in enumerate(dirs):
         dir_path = os.path.join(path, label)
         for file in os.listdir(dir_path):
@@ -181,14 +174,30 @@ def build():
     return model
 
 
+def parse_args():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-d", "--dataset_path")
+    ap.add_argument("-tg", "--train_examples_gap", type=int)
+    ap.add_argument("-vg", "--val_examples_gap", type=int)
+    ap.add_argument("-to", "--train_examples_other", type=int)
+    ap.add_argument("-vo", "--val_examples_other", type=int)
+    args = vars(ap.parse_args())
+    return args
+
+
 def main():
-    test_images, test_labels = loadTestData(os.getcwd() + '\\data\\small\\test')
-    test_images = np.asarray(test_images)
-    test_labels = np.asarray(test_labels)
+    args = parse_args()
+    base_dir = os.getcwd() + args['dataset_path']
+    validation_dir = base_dir + 'validation'
+    train_dir = base_dir + 'train'
+
+    splitDataset(base_dir, args['train_examples_gap'], args['val_examples_gap'], args['train_examples_other'],
+                 args['val_examples_other'])
 
     handleOverfitting = False
+
     model = buildNetwork(True)
-    train_generator, validation_generator = preprocessImages(_train_dir, _validation_dir, handleOverfitting)
+    train_generator, validation_generator = preprocessImages(train_dir, validation_dir, handleOverfitting)
 
     history = model.fit_generator(
         train_generator,
@@ -200,9 +209,6 @@ def main():
     model.save_weights('models\\' + model_name)
 
     drawPlots(history, handleOverfitting)
-
-    # test_labels = to_categorical(test_labels)
-    # test_loss, test_acc = model.evaluate(test_images, test_labels)
 
     pass
 
