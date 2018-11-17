@@ -3,6 +3,8 @@ import numpy as np
 import cv2
 import os
 import argparse
+import gap_cnn as gc
+
 
 def get_difference(image, background):
     image_gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
@@ -10,8 +12,6 @@ def get_difference(image, background):
     diff = cv2.absdiff(background_gray, image_gray)
 
     hist = cv2.calcHist([image], [0], None, [256], [0, 256])
-
-
 
     eq1 = cv2.equalizeHist(image_gray)
     equalizedImg1 = np.hstack([image_gray, eq1])
@@ -21,14 +21,9 @@ def get_difference(image, background):
     equalizedImg2 = np.hstack([background_gray, eq2])
     cv2.imshow('equalizedImg2', equalizedImg2)
 
-
     thresh = cv2.adaptiveThreshold(diff, 255, cv2.ADAPTIVE_THRESH_MEAN_C,
                                    cv2.THRESH_BINARY_INV, 11, 4)
     cv2.imshow("Mean Thresh", thresh)
-
-
-
-
 
     cv2.imshow('background', background)
     cv2.imshow('foreground', image)
@@ -41,8 +36,8 @@ def equalize(image, background):
     image_gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
     background_gray = cv2.cvtColor(background, cv2.COLOR_RGB2GRAY)
 
-    image1 = background_gray * (np.average(background_gray)/np.average(image_gray))
-    image2 = image_gray * (np.average(image_gray)/np.average(background_gray))
+    image1 = background_gray * (np.average(background_gray) / np.average(image_gray))
+    image2 = image_gray * (np.average(image_gray) / np.average(background_gray))
     image1 = np.asarray(image1, dtype='uint8')
     image2 = np.asarray(image2, dtype='uint8')
 
@@ -77,11 +72,17 @@ def main():
         for dir_2 in list_dirs(dir_1):
             for i, file in enumerate(os.listdir(dir_2)):
                 file_path = os.path.join(dir_2, file)
+                img = cv2.resize(img, (150, 150))
                 img = cv2.imread(file_path)
-                if i == 0:
-                    background = img
+                # if i == 0:
+                #     background = img
+                #
+                # equalize(img, background)
 
-                equalize(img, background)
+                model = gc.build()
+                label = model.predict(np.asarray(img))
+
+                print(label)
 
 
 if __name__ == '__main__':
