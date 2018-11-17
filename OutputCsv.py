@@ -12,8 +12,8 @@ class Output():
         output = self.team_name + ','
         output += str(self.train_number) + ','
         output += self.left_right + ','
-        output += str(self.frame_number) + ','
+        output += str(self.frame_number).lstrip('0') + ','
         output += str(self.wagon) + ','
-        output += self.uic_0_1 + ','
+        output += str(self.uic_0_1) + ','
         output += str(self.uic_label)
         return str(output)

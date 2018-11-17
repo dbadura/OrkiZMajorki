@@ -21,7 +21,11 @@ def get_UIC_from_photo(image):
     img = cv.medianBlur(img, 3)
 
     prog = np.average(img) + np.mean(img) / 6
-    ret, img = cv.threshold(img, prog, 255, cv.THRESH_BINARY_INV)
+    ret, img = cv.threshold(img, 167, 255, cv.THRESH_BINARY_INV)
+
+    # cv.imshow('image', img)
+    # key = cv.waitKey(0)
+
     ocr1 = pytesseract.image_to_string(img)  # , config='--psm 3')
     ocr1 = re.sub('~', '-', ocr1)
     ocr1 = re.sub('[A-Za-z (\n),]', '', ocr1)

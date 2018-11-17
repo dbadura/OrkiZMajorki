@@ -4,12 +4,20 @@ import os
 import argparse
 from uic import uic_cnn as uc
 
+model = uc.build()
 
 def parse_args():
     ap = argparse.ArgumentParser()
     ap.add_argument("-d", "--sequence_path")
     args = vars(ap.parse_args())
     return args
+
+
+def predict(image):
+    img = cv2.resize(image, (150, 150))
+
+    decision = model.predict(np.expand_dims(np.asarray(img), 0))[0][0]
+    return int(decision)
 
 
 def main():
@@ -37,5 +45,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-

@@ -4,7 +4,7 @@ import process
 
 REGEX = '.jpg'
 
-BASE_DIR = './data/Training/0_4/'
+BASE_DIR = './data/Training/0_2/'
 
 
 def gotodir(path):

@@ -3,6 +3,7 @@ import cv2
 import OutputCsv
 import ocr_test
 import readPhotos
+from uic import uic_finder
 from wagon_counting import gap_detection
 import time
 
@@ -40,19 +41,23 @@ def process(images):
         else:
             output.wagon = type
 
-        uic = ocr_test.get_UIC_from_photo(img)
+        uic=uic_finder.predict(img)
+        if uic!=0: # uic not found
+            uic = ocr_test.get_UIC_from_photo(img)
+
         output.uic_label = uic
-        if uic == 0 or uic == 999:
+        if uic == '0' or uic == '999':
             output.uic_0_1 = 0
         else:
             output.uic_0_1 = 1
 
-        img = cv2.resize(img, (250, 250))
-        cv2.imshow('image', img)
-        key = cv2.waitKey(0)
         end = time.time() - start
         # print("time: ", end*1000)
         print(output)
+        img = cv2.resize(img, (500, 500))
+        cv2.imshow('image', img)
+        key = cv2.waitKey(1)
+
     gap_detection.actual_wagon = 'locomotive'
     gap_detection.previous_result = False
     pass
