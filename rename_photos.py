@@ -2,7 +2,7 @@ import os
 
 REGEX = '.jpg'
 
-base_dir = './data/'
+base_dir = 'D:\\Dataset\\Training\\Training\\'
 RIGHT_FILE_NAME = 18
 LEFT_FILE_NAME = 17
 
@@ -26,7 +26,7 @@ def change_name(file_name, path):
             for i in range(0, diff):
                 new_name = new_name[0:border] + '0' + new_name[border:]
             print('old name:' + path + '/' + file_name + ' new name:', path + '/' + new_name)
-            os.rename(path + '/' + file_name, path + '/' + new_name)
+            # os.rename(path + '/' + file_name, path + '/' + new_name)
 
 
 def gotodir(path):
