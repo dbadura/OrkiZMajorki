@@ -4,8 +4,6 @@ import re
 REGEX = '.jpg'
 
 base_dir = './data/'
-RIGHT_FILE_NAME = 18
-LEFT_FILE_NAME = 17
 
 
 def change_name(file_name, path):
