@@ -62,10 +62,10 @@ def main():
 
         if args['mode'] == 'gap':
             label = model.predict(np.expand_dims(np.asarray(img), 0))
-            if round(label) < 1:
-                label = 'Wagon'
-            else:
-                label = 'Gap'
+            # if round(label) < 1:
+            #     label = 'Wagon'
+            # else:
+            #     label = 'Gap'
             print(label)
 
         if args['mode'] == 'wagon_number':

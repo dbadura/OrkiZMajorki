@@ -11,7 +11,7 @@ import numpy as np
 from random import shuffle
 from keras.utils import to_categorical
 
-model_name = 'wagon_gaps_3.h5'
+model_name = 'wagon_gaps_5.h5'
 original_dataset_dir = cwd = os.getcwd() + '\\data\\train'
 base_dir = os.getcwd() + '\\data\\small'
 
@@ -186,7 +186,7 @@ def main():
     test_images = np.asarray(test_images)
     test_labels = np.asarray(test_labels)
 
-    handleOverfitting = False
+    handleOverfitting = True
     model = buildNetwork(True)
     train_generator, validation_generator = preprocessImages(_train_dir, _validation_dir, handleOverfitting)
 

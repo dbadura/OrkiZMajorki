@@ -3,7 +3,7 @@ import re
 
 REGEX = '.jpg'
 
-base_dir = '.'+os.path.sep+'data'+os.path.sep
+base_dir = 'D:\\Dataset\\Training\\Training\\'
 
 
 def change_name(file_name, path):
