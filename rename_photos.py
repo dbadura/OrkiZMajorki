@@ -1,8 +1,5 @@
 import os
 import re
-from builtins import str
-
-from absl import flags
 
 REGEX = '.jpg'
 
@@ -12,8 +9,6 @@ base_dir = './data/'
 def change_name(file_name, path):
     isImage = file_name.endswith('.jpg')
     if isImage:
-        border = 0
-        lenght = 0
         regex = re.compile(r"\d_\d*_((right)|(left))_")
         search = regex.search(file_name)
         print('filename', file_name, 'search', search)
