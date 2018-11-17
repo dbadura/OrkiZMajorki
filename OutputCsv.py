@@ -5,8 +5,8 @@ class Output():
         self.left_right = 'left_right'
         self.frame_number = 0
         self.wagon = 0
-        self.uic_0_1 = 'uic'
-        self.uic_label = 0
+        self.uic_0_1 = '0'
+        self.uic_label = '0'
 
     def __str__(self):
         output = self.team_name + ','
