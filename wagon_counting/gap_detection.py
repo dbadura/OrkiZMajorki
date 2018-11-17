@@ -9,6 +9,14 @@ actual_wagon = 'locomotive'
 previous_result = False
 
 
+def parse_args():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-d", "--sequence_path")
+    ap.add_argument("-m", "--mode")
+    args = vars(ap.parse_args())
+    return args
+
+
 def increment_wagon():
     global actual_wagon
     if actual_wagon == 'locomotive':
@@ -54,6 +62,10 @@ def main():
 
         if args['mode'] == 'gap':
             label = model.predict(np.expand_dims(np.asarray(img), 0))
+            if round(label) < 1:
+                label = 'Wagon'
+            else:
+                label = 'Gap'
             print(label)
 
         if args['mode'] == 'wagon_number':

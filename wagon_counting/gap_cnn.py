@@ -11,6 +11,7 @@ import numpy as np
 from random import shuffle
 from keras.utils import to_categorical
 
+model_name = 'wagon_gaps_2.h5'
 original_dataset_dir = cwd = os.getcwd() + '..\\data\\train'
 base_dir = os.getcwd() + '..\\data\\small'
 
@@ -108,6 +109,8 @@ def preprocessImages(train_dir, validation_dir, handleOverfitting=False):
 
 def drawPlots(history, handleOverfitting=False):
     postfix = '_ignoreOverfitting' if not handleOverfitting else '_handleOverfitting'
+    postfix = '_' + model_name + postfix
+
     acc = history.history['acc']
     val_acc = history.history['val_acc']
     loss = history.history['loss']
@@ -174,7 +177,7 @@ def loadTestData(path):
 def build():
     handleOverfitting = False
     model = buildNetwork(handleOverfitting)
-    model.load_weights('model\\wagon_gaps_2.h5')
+    model.load_weights('models\\' + model_name)
     return model
 
 
@@ -194,7 +197,7 @@ def main():
         validation_data=validation_generator,
         validation_steps=50)
 
-    model.save_weights('models\\wagon_gaps_2.h5')
+    model.save_weights('models\\' + model_name)
 
     drawPlots(history, handleOverfitting)
 
