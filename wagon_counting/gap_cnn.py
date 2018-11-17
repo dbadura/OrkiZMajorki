@@ -177,7 +177,7 @@ def loadTestData(path):
 def build():
     handleOverfitting = False
     model = buildNetwork(handleOverfitting)
-    model.load_weights('models\\' + model_name)
+    model.load_weights('models/' + model_name)
     return model
 
 

@@ -3,7 +3,7 @@ import re
 
 REGEX = '.jpg'
 
-base_dir = './data/'
+base_dir = '.'+os.path.sep+'data'+os.path.sep
 
 
 def change_name(file_name, path):
@@ -19,15 +19,15 @@ def change_name(file_name, path):
             rest = '0' + rest
         new_file_name = file_name[:span_index] + rest
         print('new file name ', new_file_name)
-        os.rename(path + '/' + file_name, path + '/' + new_file_name)
+        os.rename(path + os.path.sep + file_name, path + os.path.sep + new_file_name)
 
 
 def gotodir(path):
     for dir_name in os.listdir(path):
-        if os.path.isfile(path + '/' + dir_name):
+        if os.path.isfile(path + os.path.sep + dir_name):
             change_name(dir_name, path)
         else:
-            gotodir(path + '/' + dir_name)
+            gotodir(path + os.path.sep + dir_name)
 
 
 for dir in os.listdir(base_dir):
