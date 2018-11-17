@@ -11,7 +11,7 @@ import numpy as np
 from random import shuffle
 from keras.utils import to_categorical
 
-model_name = 'wagon_gaps_5.h5'
+model_name = 'wagon_gaps_7.h5'
 original_dataset_dir = cwd = os.getcwd() + '\\data\\train'
 base_dir = os.getcwd() + '\\data\\small'
 
@@ -59,8 +59,8 @@ def buildNetwork(handleOverfitting=False):
                             input_shape=(150, 150, 3)))
     model.add(layers.MaxPooling2D((2, 2)))
     model.add(layers.Conv2D(64, (3, 3), activation='relu'))
-    model.add(layers.MaxPooling2D((2, 2)))
-    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    # model.add(layers.MaxPooling2D((2, 2)))
+    # model.add(layers.Conv2D(64, (3, 3), activation='relu'))
     model.add(layers.MaxPooling2D((2, 2)))
     model.add(layers.Conv2D(128, (3, 3), activation='relu'))
     model.add(layers.MaxPooling2D((2, 2)))

@@ -23,19 +23,19 @@ def main():
         img = cv2.resize(img, (150, 150))
 
         label = model.predict(np.expand_dims(np.asarray(img), 0))
+        print(label)
+
+        if label[0][0] < 1:
+            i = 0
+        else:
+            i = 1
 
         img = cv2.resize(img, (550, 550))
         cv2.imshow('frame', img)
-        cv2.waitKey(0)
+        cv2.waitKey(i)
 
 
 if __name__ == '__main__':
     main()
 
 
-def parse_args():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("-d", "--sequence_path")
-    ap.add_argument("-m", "--mode")
-    args = vars(ap.parse_args())
-    return args
