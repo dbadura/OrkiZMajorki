@@ -20,7 +20,7 @@ _train_dir = os.getcwd() + '\\data\\small\\train'
 _test_dir = os.getcwd() + '\\data\\small\\test'
 
 
-def splitDataset(trainCount=350, valCount=100, testCount=0):
+def splitDataset(trainCount=340, valCount=90, testCount=0):
     # Make separate directories for train/test/validation
     train_dir = os.path.join(base_dir, 'train')
     os.mkdir(train_dir)
@@ -57,6 +57,8 @@ def buildNetwork(handleOverfitting=False):
     model = models.Sequential()
     model.add(layers.Conv2D(32, (3, 3), activation='relu',
                             input_shape=(150, 150, 3)))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
     model.add(layers.MaxPooling2D((2, 2)))
     model.add(layers.Conv2D(64, (3, 3), activation='relu'))
     model.add(layers.MaxPooling2D((2, 2)))
@@ -186,7 +188,7 @@ def main():
     test_images = np.asarray(test_images)
     test_labels = np.asarray(test_labels)
 
-    handleOverfitting = True
+    handleOverfitting = False
     model = buildNetwork(True)
     train_generator, validation_generator = preprocessImages(_train_dir, _validation_dir, handleOverfitting)
 
