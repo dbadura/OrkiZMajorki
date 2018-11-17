@@ -11,16 +11,16 @@ import numpy as np
 from random import shuffle
 from keras.utils import to_categorical
 
-model_name = 'wagon_gaps_2.h5'
-original_dataset_dir = cwd = os.getcwd() + '..\\data\\train'
-base_dir = os.getcwd() + '..\\data\\small'
+model_name = 'wagon_gaps_3.h5'
+original_dataset_dir = cwd = os.getcwd() + '\\data\\train'
+base_dir = os.getcwd() + '\\data\\small'
 
-_validation_dir = os.getcwd() + '..\\data\\small\\validation'
-_train_dir = os.getcwd() + '..\\data\\small\\train'
-_test_dir = os.getcwd() + '..\\data\\small\\test'
+_validation_dir = os.getcwd() + '\\data\\small\\validation'
+_train_dir = os.getcwd() + '\\data\\small\\train'
+_test_dir = os.getcwd() + '\\data\\small\\test'
 
 
-def splitDataset(trainCount=200, valCount=50, testCount=50):
+def splitDataset(trainCount=350, valCount=100, testCount=0):
     # Make separate directories for train/test/validation
     train_dir = os.path.join(base_dir, 'train')
     os.mkdir(train_dir)
@@ -109,7 +109,7 @@ def preprocessImages(train_dir, validation_dir, handleOverfitting=False):
 
 def drawPlots(history, handleOverfitting=False):
     postfix = '_ignoreOverfitting' if not handleOverfitting else '_handleOverfitting'
-    postfix = '_' + model_name + postfix
+    postfix = '_' + model_name[:-3] + postfix
 
     acc = history.history['acc']
     val_acc = history.history['val_acc']
@@ -182,7 +182,7 @@ def build():
 
 
 def main():
-    test_images, test_labels = loadTestData(os.getcwd() + '..\\data\\small\\test')
+    test_images, test_labels = loadTestData(os.getcwd() + '\\data\\small\\test')
     test_images = np.asarray(test_images)
     test_labels = np.asarray(test_labels)
 
@@ -202,7 +202,7 @@ def main():
     drawPlots(history, handleOverfitting)
 
     # test_labels = to_categorical(test_labels)
-    test_loss, test_acc = model.evaluate(test_images, test_labels)
+    # test_loss, test_acc = model.evaluate(test_images, test_labels)
 
     pass
 
