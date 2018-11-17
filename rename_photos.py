@@ -1,4 +1,5 @@
 import os
+import re
 
 REGEX = '.jpg'
 
@@ -10,23 +11,17 @@ LEFT_FILE_NAME = 17
 def change_name(file_name, path):
     isImage = file_name.endswith('.jpg')
     if isImage:
-        border = 0
-        lenght = 0
-        if 'left' in file_name:
-            border = 10
-            lenght = LEFT_FILE_NAME
-
-        elif 'right' in file_name:
-            border = 11
-            lenght = RIGHT_FILE_NAME
-
-        if (border != 0 and len(file_name) != lenght):
-            diff = lenght - len(file_name)
-            new_name = file_name
-            for i in range(0, diff):
-                new_name = new_name[0:border] + '0' + new_name[border:]
-            print('old name:' + path + '/' + file_name + ' new name:', path + '/' + new_name)
-            os.rename(path + '/' + file_name, path + '/' + new_name)
+        regex = re.compile(r"\d_\d*_((right)|(left))_")
+        search = regex.search(file_name)
+        print('filename', file_name, 'search', search)
+        span_index = search.span(0)[1]
+        rest = file_name[span_index:]
+        print(rest)
+        for x in range(7 - len(rest)):
+            rest = '0' + rest
+        new_file_name = file_name[:span_index] + rest
+        print('new file name ', new_file_name)
+        os.rename(path + '/' + file_name, path + '/' + new_file_name)
 
 
 def gotodir(path):
