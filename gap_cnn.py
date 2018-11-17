@@ -9,6 +9,7 @@ from keras.preprocessing.image import ImageDataGenerator
 import cv2
 import numpy as np
 from random import shuffle
+from keras.utils import to_categorical
 
 original_dataset_dir = cwd = os.getcwd() + '\\data\\train'
 base_dir = os.getcwd() + '\\data\\small'
@@ -136,8 +137,8 @@ def showAugumentationExamples():
         horizontal_flip=True,
         fill_mode='nearest')
 
-    fnames = [os.path.join(train_dir + "\\cats", fname) for
-              fname in os.listdir(train_dir + "\\cats")]
+    fnames = [os.path.join(_train_dir + "\\cats", fname) for
+              fname in os.listdir(_train_dir + "\\cats")]
     img_path = fnames[3]
     img = image.load_img(img_path, target_size=(150, 150))
     x = image.img_to_array(img)
@@ -165,7 +166,7 @@ def loadTestData(path):
             img = cv2.imread(file_path)
             img = cv2.resize(img, (150, 150))
             images.append(img)
-            labels.append(float(i))
+            labels.append(i)
 
     return images, labels
 
@@ -173,7 +174,7 @@ def loadTestData(path):
 def build():
     handleOverfitting = False
     model = buildNetwork(handleOverfitting)
-    model.load_weights('wagon_gaps.h5')
+    model.load_weights('wagon_gaps_1.h5')
     return model
 
 
@@ -183,29 +184,21 @@ def main():
     test_labels = np.asarray(test_labels)
 
     handleOverfitting = False
-    model = buildNetwork(handleOverfitting)
+    model = buildNetwork(True)
     train_generator, validation_generator = preprocessImages(_train_dir, _validation_dir, handleOverfitting)
 
     history = model.fit_generator(
         train_generator,
         steps_per_epoch=50,
-        epochs=5,
+        epochs=7,
         validation_data=validation_generator,
         validation_steps=50)
 
-    model.save_weights('wagon_gaps.h5')
-
-    # a1 = cv2.imread('D:\\Dataset\\train_separator\\test\\wagon_gap\\0_57_right_254.jpg')
-    # a2 = cv2.imread('D:\\Dataset\\train_separator\\test\\other\\0_57_right_98.jpg')
-    # a1 = cv2.resize(a1, (150, 150))
-    # a2 = cv2.resize(a2, (150, 150))
-    # a1 = np.expand_dims(a1, 0)
-    # a2 = np.expand_dims(a2, 0)
-    #
-    # v1 = model.predict(np.asarray(a1))
-    # v2 = model.predict(np.asarray(a2))
+    model.save_weights('wagon_gaps_1.h5')
 
     drawPlots(history, handleOverfitting)
+
+    # test_labels = to_categorical(test_labels)
     test_loss, test_acc = model.evaluate(test_images, test_labels)
 
     pass
