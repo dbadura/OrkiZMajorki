@@ -9,7 +9,7 @@ base_dir = '.'+os.path.sep+'data'+os.path.sep
 def change_name(file_name, path):
     isImage = file_name.endswith('.jpg')
     if isImage:
-        regex = re.compile(r"\d_\d*_((right)|(left))_")
+        regex = re.compile(r'\d_\d*_((right)|(left))_')
         search = regex.search(file_name)
         print('filename', file_name, 'search', search)
         span_index = search.span(0)[1]
