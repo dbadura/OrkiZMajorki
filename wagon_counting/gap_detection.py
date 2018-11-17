@@ -1,18 +1,30 @@
-from os import walk
 import numpy as np
 import cv2
 import os
 import argparse
-import gap_cnn as gc
+from wagon_counting import gap_cnn as gc
 
 model = None
+actual_wagon = 'locomotive'
+previous_result = False
 
 
-def parse_args():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("-d", "--sequence_path")
-    args = vars(ap.parse_args())
-    return args
+def increment_wagon():
+    global actual_wagon
+    if actual_wagon == 'locomotive':
+        actual_wagon = 1
+    else:
+        actual_wagon += 1
+
+
+def get_wagon_number(image):
+    global previous_result
+    actual_result = contains_gap(image)
+    if actual_result and not previous_result:
+        increment_wagon()
+
+    previous_result = actual_result
+    return actual_wagon
 
 
 def contains_gap(image):
@@ -40,8 +52,13 @@ def main():
         img = cv2.imread(file_path)
         img = cv2.resize(img, (150, 150))
 
-        label = model.predict(np.expand_dims(np.asarray(img), 0))
-        print(label)
+        if args['mode'] == 'gap':
+            label = model.predict(np.expand_dims(np.asarray(img), 0))
+            print(label)
+
+        if args['mode'] == 'wagon_number':
+            wagon_number = get_wagon_number(img)
+            print(wagon_number)
 
         img = cv2.resize(img, (550, 550))
         cv2.imshow('frame', img)
@@ -50,3 +67,11 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+def parse_args():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-d", "--sequence_path")
+    ap.add_argument("-m", "--mode")
+    args = vars(ap.parse_args())
+    return args
