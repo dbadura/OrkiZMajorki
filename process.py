@@ -25,6 +25,7 @@ def extract_basic_data(image_path):
     outputCsv.train_number = train_number
     outputCsv.left_right = left_right
 
+    ## ALWAYS REMEMBER TO RENAME PHOTOS BEFORE PROCESSING
     outputCsv.frame_number=image_no_extractor.search(image_path)[0]
 
     return outputCsv
