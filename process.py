@@ -33,7 +33,13 @@ def extract_basic_data(image_path):
 def process(images):
     train_number = train_no_extractor.search(images[0])[0]
     train_number = train_number[1:len(train_number) - 1]
-    f = open(train_number+".csv", "w")
+
+    if 'left' in images[0]:
+        left_right = 'left'
+    else:
+        left_right = 'right'
+
+    f = open(train_number+'_'+left_right+".csv", "w")
     f.write('team_name,train_number,left_right,frame_number,wagon,uic_0_1,uic_label\n')
     for image_path in images:
         output = extract_basic_data(image_path)
