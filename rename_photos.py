@@ -3,7 +3,7 @@ import re
 
 REGEX = '.jpg'
 
-base_dir = 'D:\\Dataset\\Training\\Training\\'
+base_dir = './data/'
 
 
 def change_name(file_name, path):
@@ -23,11 +23,12 @@ def change_name(file_name, path):
 
 
 def gotodir(path):
-    for dir_name in os.listdir(path):
-        if os.path.isfile(path + os.path.sep + dir_name):
-            change_name(dir_name, path)
-        else:
-            gotodir(path + os.path.sep + dir_name)
+    if os.path.isdir(path):
+        for dir_name in os.listdir(path):
+            if os.path.isfile(path + os.path.sep + dir_name):
+                change_name(dir_name, path)
+            else:
+                gotodir(path + os.path.sep + dir_name)
 
 
 for dir in os.listdir(base_dir):

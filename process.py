@@ -51,8 +51,11 @@ def process(images):
         if uic!=0: # uic not found
             uic = ocr_test.get_UIC_from_photo(img)
 
+        if uic== '':
+            uic='0'
         output.uic_label = uic
-        if uic == '0' or uic == '999':
+        # output.uic_0_1 = 0
+        if str(uic) == '0' or str(uic) == '999':
             output.uic_0_1 = 0
         else:
             output.uic_0_1 = 1
@@ -70,7 +73,6 @@ def process(images):
     gap_detection.previous_result = False
     f.close()
     pass
-
 
 def main():
     readPhotos.startProcessing()
