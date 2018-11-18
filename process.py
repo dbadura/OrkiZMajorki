@@ -16,12 +16,12 @@ def extract_basic_data(image_path):
     return outputCsv
 
 
-def process(images):
+def process(images, frame_skip):
     for image_path in images:
         output = extract_basic_data(image_path)
         img = cv2.imread(image_path)
 
-        output.train_number = gap_detection.get_wagon_number(image=img)
+        output.train_number = gap_detection.get_wagon_number(frame_skip=frame_skip, image=img)
         img = cv2.resize(img, (250, 250))
         cv2.imshow('image', img)
         key = cv2.waitKey(0)

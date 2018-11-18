@@ -8,29 +8,34 @@ from wagon_counting import gap_cnn as pgc
 model = None
 actual_wagon = 'locomotive'
 previous_result = False
+counter = 0
 
 
 def parse_args():
     ap = argparse.ArgumentParser()
     ap.add_argument("-d", "--sequence_path")
+    ap.add_argument("-f", "--frame_skip", type=int)
     ap.add_argument("-m", "--mode")
     args = vars(ap.parse_args())
     return args
 
 
-def increment_wagon():
+def increment_wagon(frame_skip):
     global actual_wagon
-    if actual_wagon == 'locomotive':
+    global counter
+
+    counter += 1
+    if counter < frame_skip and actual_wagon == 'locomotive':
         actual_wagon = 1
     else:
         actual_wagon += 1
 
 
-def get_wagon_number(image):
+def get_wagon_number(image, frame_skip):
     global previous_result
     actual_result = contains_gap(image)
     if actual_result and not previous_result:
-        increment_wagon()
+        increment_wagon(frame_skip)
 
     previous_result = actual_result
     return actual_wagon
@@ -41,7 +46,7 @@ def contains_gap(image):
     result = False
 
     if model is None:
-        model = gc.build()
+        model = pgc.build()
 
     image = cv2.resize(image, (150, 150))
     label = model.predict(np.expand_dims(np.asarray(image), 0))
@@ -70,7 +75,7 @@ def main():
             print(round(label[0][0]))
 
         if args['mode'] == 'wagon_number':
-            wagon_number = get_wagon_number(img)
+            wagon_number = get_wagon_number(img, frame_skip=15)
             print(wagon_number)
 
         img = cv2.resize(img, (550, 550))

@@ -20,7 +20,7 @@ def gotodir(path):
             photos.append(dir_name)
     if(len(photos) != 0 ):
         full_path_photos =  sorted([path+'/'+photo for photo in photos])
-        process.process(full_path_photos)
+        process.process(full_path_photos, frame_skip=15)
         pass
     # SEND TO JEWS
     pass
