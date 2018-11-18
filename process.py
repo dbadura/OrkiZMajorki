@@ -54,9 +54,9 @@ def process(images, frame_skip=15, path=''):
         img = cv2.imread(image_path)
 
         start = time.time()
-        output.train_number = gap_detection.get_wagon_number(frame_skip=frame_skip, image=img)
 
-        type = gap_detection.get_wagon_number(image=img)
+
+        type = gap_detection.get_wagon_number(image=img, frame_skip=frame_skip)
         if type == 'locomotive':
             output.uic_0_1 = type
         else:
