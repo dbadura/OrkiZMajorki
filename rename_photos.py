@@ -3,7 +3,6 @@ import re
 
 REGEX = '.jpg'
 
-base_dir = './data/'
 
 
 def change_name(file_name, path):
@@ -30,6 +29,6 @@ def gotodir(path):
             else:
                 gotodir(path + os.path.sep + dir_name)
 
-
-for dir in os.listdir(base_dir):
-    gotodir(base_dir + dir)
+def rename_photos(base_dir):
+    for dir in os.listdir(base_dir):
+        gotodir(base_dir + dir)
