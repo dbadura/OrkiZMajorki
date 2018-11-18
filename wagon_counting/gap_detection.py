@@ -2,7 +2,8 @@ import numpy as np
 import cv2
 import os
 import argparse
-from wagon_counting import gap_cnn as gc
+from wagon_counting import gap_cnn as pgc
+# from wagon_counting import pretrained_gap_cnn as pgc
 
 model = None
 actual_wagon = 'locomotive'
@@ -53,7 +54,7 @@ def contains_gap(image):
 def main():
     args = parse_args()
 
-    model = gc.build()
+    model = pgc.build()
     path = args['sequence_path']
     for i, file in enumerate(sorted(os.listdir(path))):
         file_path = os.path.join(path, file)
@@ -66,7 +67,7 @@ def main():
             #     label = 'Wagon'
             # else:
             #     label = 'Gap'
-            print(label)
+            print(round(label[0][0]))
 
         if args['mode'] == 'wagon_number':
             wagon_number = get_wagon_number(img)

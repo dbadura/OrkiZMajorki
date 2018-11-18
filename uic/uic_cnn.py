@@ -11,7 +11,7 @@ import numpy as np
 from random import shuffle
 from keras.utils import to_categorical
 
-model_name = 'uic.h5'
+
 import os
 import shutil
 import matplotlib.pyplot as plt
@@ -26,7 +26,7 @@ import argparse
 from random import shuffle
 from keras.utils import to_categorical
 
-model_name = 'uic_8.h5'
+model_name = 'uic_10.h5'
 
 
 def splitDataset(base_dir, trainCountGap, valCountGap, trainCountOther, valCountOther):
@@ -191,8 +191,8 @@ def main():
     validation_dir = base_dir + 'validation'
     train_dir = base_dir + 'train'
 
-    splitDataset(base_dir, args['train_examples_gap'], args['val_examples_gap'], args['train_examples_other'],
-                 args['val_examples_other'])
+    # splitDataset(base_dir, args['train_examples_gap'], args['val_examples_gap'], args['train_examples_other'],
+    #              args['val_examples_other'])
 
     handleOverfitting = False
 
@@ -202,7 +202,7 @@ def main():
     history = model.fit_generator(
         train_generator,
         steps_per_epoch=50,
-        epochs=15,
+        epochs=20,
         validation_data=validation_generator,
         validation_steps=50)
 

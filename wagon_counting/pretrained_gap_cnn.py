@@ -120,26 +120,19 @@ def parse_args():
 
 def main():
     args = parse_args()
-    base_dir = args['dataset_path']
+    base_dir = os.getcwd() + args['dataset_path']
     validation_dir = base_dir + '\\validation'
     train_dir = base_dir + '\\train'
 
-    splitDataset(base_dir, args['train_examples_gap'], args['val_examples_gap'], args['train_examples_other'],
-                 args['val_examples_other'])
+    # splitDataset(base_dir, args['train_examples_gap'], args['val_examples_gap'], args['train_examples_other'],
+    #             args['val_examples_other'])
 
     handleOverfitting = False
 
     model = buildNetwork(True)
 
     train_datagen = ImageDataGenerator(
-        rescale=1. / 255,
-        rotation_range=40,
-        width_shift_range=0.2,
-        height_shift_range=0.2,
-        shear_range=0.2,
-        zoom_range=0.2,
-        horizontal_flip=True,
-        fill_mode='nearest')
+        rescale=1. / 255)
     test_datagen = ImageDataGenerator(rescale=1. / 255)
     train_generator = train_datagen.flow_from_directory(
         train_dir,
@@ -157,8 +150,8 @@ def main():
 
     history = model.fit_generator(
         train_generator,
-        steps_per_epoch=100,
-        epochs=30,
+        steps_per_epoch=50,
+        epochs=2,
         validation_data=validation_generator,
         validation_steps=50)
 

@@ -12,10 +12,10 @@ import argparse
 from random import shuffle
 from keras.utils import to_categorical
 
-model_name = 'wagon_gaps_8.h5'
+model_name = 'multiclass_wagon_gaps_1.h5'
 
 
-def splitDataset(base_dir, trainCountGap, valCountGap, trainCountOther, valCountOther):
+def splitDataset(base_dir, trainCountGap, valCountGap, trainCountOther, valCountOther, trainLoco, valLoco):
     # Make separate directories for train/test/validation
     train_dir = os.path.join(base_dir, 'train')
     os.mkdir(train_dir)
@@ -56,7 +56,22 @@ def splitDataset(base_dir, trainCountGap, valCountGap, trainCountOther, valCount
     for i in range(valCountOther):
         shutil.copyfile(os.path.join(base_dir, label, files[i]), os.path.join(validation_dir, label, files[i]))
 
-    return train_dir, validation_dir
+        # Wagon gap
+    label = 'lokomotywy'
+    os.mkdir(os.path.join(train_dir, label))
+    os.mkdir(os.path.join(validation_dir, label))
+
+    dir_path = os.path.join(base_dir, label)
+
+    files = []
+    for file in os.listdir(dir_path):
+        files.append(file)
+
+    shuffle(files)
+    for i in range(trainCountOther):
+        shutil.copyfile(os.path.join(base_dir, label, files[i]), os.path.join(train_dir, label, files[i]))
+    for i in range(valCountOther):
+        shutil.copyfile(os.path.join(base_dir, label, files[i]), os.path.join(validation_dir, label, files[i]))
 
 
 def buildNetwork(handleOverfitting=False):
@@ -117,15 +132,16 @@ def loadData(base_dir):
     val_data = []
     val_labels = []
 
-    labels = ['other', 'wagon_gap']
+    labels = ['other', 'wagon_gap', 'lokomotywy']
     for i, label in enumerate(labels):
         path = os.path.join(training_dir, label)
         for file in os.listdir(path):
+            file = os.path.join(path, file)
             im = cv2.imread(file)
             im = cv2.resize(im, (150, 150))
             im = im.astype('float32') / 255
 
-            y = np.zeros[len(labels)]
+            y = np.zeros(len(labels))
             y[i] = 1
 
             train_labels.append(y)
@@ -133,10 +149,11 @@ def loadData(base_dir):
 
         path = os.path.join(validation_dir, label)
         for file in os.listdir(path):
+            file = os.path.join(path, file)
             im = cv2.imread(file)
             im = cv2.resize(im, (150, 150))
 
-            y = np.zeros[len(labels)]
+            y = np.zeros(len(labels))
             y[i] = 1
 
             val_labels.append(y)
@@ -170,20 +187,21 @@ def main():
     validation_dir = base_dir + 'validation'
     train_dir = base_dir + 'train'
 
-    splitDataset(base_dir, args['train_examples_gap'], args['val_examples_gap'], args['train_examples_other'],
-                 args['val_examples_other'])
+    # splitDataset(base_dir, args['train_examples_gap'], args['val_examples_gap'], args['train_examples_other'],
+    #              args['val_examples_other'], args['train_examples_loco'],
+    #              args['val_examples_loco'])
 
     handleOverfitting = False
+    train_data, train_labels, val_data, val_labels = loadData(base_dir)
 
     model = buildNetwork(True)
-    train_generator, validation_generator = preprocessImages(train_dir, validation_dir, handleOverfitting)
 
-    history = model.fit_generator(
-        train_generator,
-        steps_per_epoch=50,
-        epochs=15,
-        validation_data=validation_generator,
-        validation_steps=50)
+    train_data = np.asarray(train_data)
+    val_data = np.asarray(val_data)
+    train_labels = np.asarray(train_labels)
+    val_labels = np.asarray(val_labels)
+    history = model.fit(train_data, train_labels, epochs=15, batch_size=64,
+                        validation_data=(val_data, val_labels))
 
     model.save_weights('models\\' + model_name)
 
