@@ -24,11 +24,17 @@ def extract_basic_data(image_path):
 
     outputCsv.train_number = train_number
     outputCsv.left_right = left_right
-    outputCsv.frame_number = image_no_extractor.search(image_path)[0]
+
+    outputCsv.frame_number=image_no_extractor.search(image_path)[0]
+
     return outputCsv
 
 
 def process(images):
+    train_number = train_no_extractor.search(images[0])[0]
+    train_number = train_number[1:len(train_number) - 1]
+    f = open(train_number+".csv", "w")
+    f.write('team_name,train_number,left_right,frame_number,wagon,uic_0_1,uic_label\n')
     for image_path in images:
         output = extract_basic_data(image_path)
         img = cv2.imread(image_path)
@@ -51,15 +57,18 @@ def process(images):
         else:
             output.uic_0_1 = 1
 
+        print(str(output))
+        f.write(str(output)+'\n')
         end = time.time() - start
         # print("time: ", end*1000)
-        print(output)
+
         img = cv2.resize(img, (500, 500))
         cv2.imshow('image', img)
         key = cv2.waitKey(1)
 
     gap_detection.actual_wagon = 'locomotive'
     gap_detection.previous_result = False
+    f.close()
     pass
 
 

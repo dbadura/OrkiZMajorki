@@ -12,7 +12,10 @@ class Output():
         output = self.team_name + ','
         output += str(self.train_number) + ','
         output += self.left_right + ','
-        output += str(self.frame_number).lstrip('0') + ','
+        self.frame_number = str(self.frame_number).lstrip('0')
+        if self.frame_number=='':
+            self.frame_number='0'
+        output += str(self.frame_number) + ','
         output += str(self.wagon) + ','
         output += str(self.uic_0_1) + ','
         output += str(self.uic_label)
