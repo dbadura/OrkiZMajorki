@@ -49,6 +49,7 @@ def process(images, frame_skip=15, path=''):
     f.write('team_name,train_number,left_right,frame_number,wagon,uic_0_1,uic_label\n')
 
     images_output = list()
+    wagons = 0
     for image_path in images:
         output = extract_basic_data(image_path)
         img = cv2.imread(image_path)
@@ -59,6 +60,7 @@ def process(images, frame_skip=15, path=''):
         type = gap_detection.get_wagon_number(image=img, frame_skip=frame_skip)
         if type == 'locomotive':
             output.uic_0_1 = type
+
         else:
             output.wagon = type
 
@@ -70,9 +72,14 @@ def process(images, frame_skip=15, path=''):
             uic = '0'
         output.uic_label = uic
         # output.uic_0_1 = 0
+
         if str(uic) == '0' or str(uic) == '999':
-            output.uic_0_1 = 0
+            if output.uic_0_1 !='locomotive':
+                output.uic_0_1 = 0
         else:
+            if output.uic_0_1 == 'locomotive':
+                gap_detection.increment_wagon(frame_skip=frame_skip)
+                output.wagon = 1
             output.uic_0_1 = 1
 
         print(str(output))
