@@ -14,10 +14,10 @@ import numpy as np
 import pytesseract
 
 
-imgc = cv.imread('0_42_left_57.jpg')
+imgc = cv.imread('0_0_left_26.jpg')
 #imgc[:,:,2] = 0
 img = cv.cvtColor(imgc, cv.COLOR_BGR2GRAY)
-img = cv.medianBlur(img,3)
+img = cv.medianBlur(img,5)
 prog2 = np.average(img)*1.2
 
 prog = prog2

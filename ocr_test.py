@@ -7,44 +7,53 @@ import os
 import cv2 as cv
 import numpy as np
 import re
-from IPython.display import display
 
 filename = "0_42_left_57.jpg"
 # Simple image to string
 
-def get_UIC_from_photo(filename):
-#    ocr2 = pytesseract.image_to_string(Image.open(filename))
-    img = cv.imread(filename,0)
-    img = cv.medianBlur(img,3)
-    prog = np.average(img)*1.2
-    ret,img = cv.threshold(img,prog,255,cv.THRESH_BINARY_INV)
-#    img = cv2.resize(img, None, fx=5, fy=5)
-#    ocr1 = pytesseract.image_to_string(filename)    # Convert to gray
-#    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-#    cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-#    kernel = np.ones((4, 4), np.uint8)
-#    img = cv2.erode(img, kernel, iterations=2)
-    ocr1 = pytesseract.image_to_string(img)#, config='--psm 3')
-#    cv2.imwrite('test1.jpg', img)
-#    print(ocr1)
-#    if ocr1 != ocr2:
-#        print(ocr1)
-#        print(ocr2)
-    ocr1 = re.sub('~', '-',ocr1)
-    ocr1 = re.sub('[A-Za-z (\n)]', '',ocr1)
-    
-    pattern = re.compile("(\d{7}\-\d{1})")
-    return ocr1
+#pattern = re.compile("(\d{7}\-\d{1})")
+pattern = re.compile("(\d{6,7}\-\d{1})")
 
-#print(get_UIC_from_photo('test1.jpg'))
+def get_UIC_from_photo(image):
+    imgo = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+    img = cv.medianBlur(imgo,3)
+#    prog = np.average(img)+np.mean(img)/6
+#    prog = 167
+    img = cv.adaptiveThreshold(img,255,cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY_INV,49,-15)
+    ocr1 = pytesseract.image_to_string(img)#, config='--psm 3')
+    ocr1 = re.sub('~', '-',ocr1)
+    ocr1 = re.sub('\$', '5',ocr1)
+    ocr1 = re.sub('([^0-9\-]*)', '',ocr1)
+    
+#    plt.subplot(1,1,1),plt.imshow(img,'gray')
+#    #plt.subplot(1,1,1),plt.imshow(img)
+#    plt.show()
+    m = pattern.search(ocr1)
+    
+    if m:
+        if len(m[1]) == 8:
+            return '5' + str(m[1])
+        else:
+            return m[1]
+    else:       
+        img = cv.medianBlur(imgo,5)
+        img = cv.adaptiveThreshold(img,255,cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY_INV,49,-15)
+        kernel = np.ones((2,2),np.uint8)
+        img = cv.erode(img,kernel,iterations = 3)
         
-for filename in os.listdir(os.getcwd()):
-    if filename.endswith(".jpg") :
-        UIC= get_UIC_from_photo(filename)
-        if len(UIC) > 1:
-            print(filename + ": " + UIC)
-        else:            
-            print(filename + "failed")
-        continue
-    else:
-        continue
+        ocr1 = pytesseract.image_to_string(img)#, config='--osm 9')
+        
+        ocr1 = re.sub('~', '-',ocr1)
+        ocr1 = re.sub('\$', '5',ocr1)
+        ocr1 = re.sub('([^0-9\-]*)', '',ocr1)
+        
+        m = pattern.search(ocr1)
+        
+        if m:
+            if len(m[1]) == 8:
+                return '5' + str(m[1])
+            else:
+                return m[1]
+#    if len(ocr1)>7 and len(ocr1)<10:
+#        return '999'
+    return ""
