@@ -12,7 +12,7 @@ import argparse
 from random import shuffle
 from keras.utils import to_categorical
 
-model_name = 'wagon_gaps_4.h5'
+model_name = 'wagon_gaps_8.h5'
 
 
 def splitDataset(base_dir, trainCountGap, valCountGap, trainCountOther, valCountOther):
