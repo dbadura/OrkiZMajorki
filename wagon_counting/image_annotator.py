@@ -5,21 +5,9 @@ import argparse
 import shutil
 from random import shuffle
 
-
-def get_difference(image, background):
-    image_gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-    background_gray = cv2.cvtColor(background, cv2.COLOR_RGB2GRAY)
-    diff = cv2.absdiff(background_gray, image_gray)
-
-    thresh = cv2.adaptiveThreshold(diff, 255, cv2.ADAPTIVE_THRESH_MEAN_C,
-                                   cv2.THRESH_BINARY_INV, 11, 4)
-    cv2.imshow("Mean Thresh", thresh)
-
-    cv2.imshow('background', background)
-    cv2.imshow('foreground', image)
-    cv2.imshow('diff', diff)
-    cv2.waitKey(0)
-    pass
+"""
+Helper script for image labelling
+"""
 
 
 def parse_args():

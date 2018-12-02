@@ -15,6 +15,13 @@ from keras.utils import to_categorical
 
 model_name = 'pretrained_multiclass_wagon_gaps_1.h5'
 
+"""
+Script with the same functionality as gap_cnn, but
+using detection model based on pretrained net (VGG16)
+with 3 classes : locomotive, gap, other
+
+NOTE: Pretrained 3 class model turned out to be uneffective, don't use this
+"""
 
 def splitDataset(base_dir, trainCountGap, valCountGap, trainCountOther, valCountOther, trainLoco, valLoco):
     # Make separate directories for train/test/validation

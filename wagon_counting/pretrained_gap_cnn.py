@@ -15,6 +15,13 @@ from keras.utils import to_categorical
 
 model_name = 'pre_wagon_gaps_4.h5'
 
+"""
+Script with the same functionality as gap_cnn, but
+using detection model based on pretrained net (VGG16)
+
+NOTE: Pretrained model turned out to be uneffective, don't use this
+"""
+
 
 def splitDataset(base_dir, trainCountGap, valCountGap, trainCountOther, valCountOther):
     # Make separate directories for train/test/validation

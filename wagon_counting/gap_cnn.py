@@ -1,21 +1,33 @@
+import argparse
 import os
 import shutil
+from random import shuffle
+
 import matplotlib.pyplot as plt
 from keras import layers
 from keras import models
 from keras import optimizers
-from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
-import cv2
-import numpy as np
-import argparse
-from random import shuffle
-from keras.utils import to_categorical
 
+"""
+This script is used to train model for wagon gap detection
+using training and validation dataset passed in arguments
+"""
+
+# Name of generated model
 model_name = 'wagon_gaps_8.h5'
 
 
 def splitDataset(base_dir, trainCountGap, valCountGap, trainCountOther, valCountOther):
+    """
+    Splits dataset in base_dir into training and validation datasets
+    :param trainCountGap: Number of images in training set for wagon_gap class
+    :param valCountGap: Number of images in validation set for wagon_gap class
+    :param trainCountOther: Number of images in training set for other class
+    :param valCountOther: Number of images in validation set for other class
+    :return: path to training dir, path to validation dir
+    """
+
     # Make separate directories for train/test/validation
     train_dir = os.path.join(base_dir, 'train')
     os.mkdir(train_dir)
@@ -60,6 +72,11 @@ def splitDataset(base_dir, trainCountGap, valCountGap, trainCountOther, valCount
 
 
 def buildNetwork(handleOverfitting=False):
+    """
+    Builds model of cnn to wagon gap detection
+    :param handleOverfitting: If true adds dropout layer
+    :return: Compiled model
+    """
     model = models.Sequential()
     model.add(layers.Conv2D(32, (3, 3), activation='relu',
                             input_shape=(150, 150, 3)))
@@ -85,6 +102,13 @@ def buildNetwork(handleOverfitting=False):
 
 
 def preprocessImages(train_dir, validation_dir, handleOverfitting=False):
+    """
+    Preprocesses images and creates generators for training and validation datasets
+    :param train_dir: Path to training dataset
+    :param validation_dir: Path to validation dataset
+    :param handleOverfitting: If true, uses standard data augumentation
+    :return: generator for training images, generator for validation images
+    """
     if handleOverfitting:
         train_datagen = ImageDataGenerator(
             rescale=1. / 255,
@@ -114,6 +138,12 @@ def preprocessImages(train_dir, validation_dir, handleOverfitting=False):
 
 
 def drawPlots(history, handleOverfitting=False):
+    """
+    Draw plots with training/validation accuracy/loss
+    :param history:
+    :param handleOverfitting:
+    :return:
+    """
     postfix = '_ignoreOverfitting' if not handleOverfitting else '_handleOverfitting'
     postfix = '_' + model_name[:-3] + postfix
 
@@ -136,24 +166,11 @@ def drawPlots(history, handleOverfitting=False):
     plt.show()
 
 
-def loadTestData(path):
-    labels = []
-    images = []
-
-    dirs = ['wagon_gap', 'other']
-    for i, label in enumerate(dirs):
-        dir_path = os.path.join(path, label)
-        for file in os.listdir(dir_path):
-            file_path = os.path.join(dir_path, file)
-            img = cv2.imread(file_path)
-            img = cv2.resize(img, (150, 150))
-            images.append(img)
-            labels.append(i)
-
-    return images, labels
-
-
 def build():
+    """
+    Build model for gap detection
+    :return:
+    """
     handleOverfitting = False
     model = buildNetwork(handleOverfitting)
     model.load_weights('models/' + model_name)
@@ -177,8 +194,8 @@ def main():
     validation_dir = base_dir + 'validation'
     train_dir = base_dir + 'train'
 
-    splitDataset(base_dir, args['train_examples_gap'], args['val_examples_gap'], args['train_examples_other'],
-                 args['val_examples_other'])
+    # splitDataset(base_dir, args['train_examples_gap'], args['val_examples_gap'], args['train_examples_other'],
+    #              args['val_examples_other'])
 
     handleOverfitting = False
 

@@ -4,7 +4,13 @@ import os
 import argparse
 from uic import uic_cnn as uc
 
+"""
+This script for finding wagons with UIC code
+by using deep learning model
+"""
+
 model = uc.build()
+
 
 def parse_args():
     ap = argparse.ArgumentParser()

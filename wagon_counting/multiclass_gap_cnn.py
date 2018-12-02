@@ -12,6 +12,13 @@ import argparse
 from random import shuffle
 from keras.utils import to_categorical
 
+"""
+Script with the same functionality as gap_cnn, but
+using detection model with 3 classes : gap, locomotive, other
+
+NOTE: 3 classes model turned out to be uneffective, don't use this
+"""
+
 model_name = 'multiclass_wagon_gaps_1.h5'
 
 

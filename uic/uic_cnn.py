@@ -1,30 +1,20 @@
-import os
-import shutil
-import matplotlib.pyplot as plt
-from keras import layers
-from keras import models
-from keras import optimizers
-from keras.preprocessing import image
-from keras.preprocessing.image import ImageDataGenerator
-import cv2
-import numpy as np
-from random import shuffle
-from keras.utils import to_categorical
-
-
-import os
-import shutil
-import matplotlib.pyplot as plt
-from keras import layers
-from keras import models
-from keras import optimizers
-from keras.preprocessing import image
-from keras.preprocessing.image import ImageDataGenerator
-import cv2
-import numpy as np
 import argparse
+import os
+import shutil
 from random import shuffle
-from keras.utils import to_categorical
+
+import cv2
+import matplotlib.pyplot as plt
+from keras import layers
+from keras import models
+from keras import optimizers
+from keras.preprocessing.image import ImageDataGenerator
+
+
+"""
+This script is used to train model for wagons with UIC detection
+using training and validation dataset passed in arguments
+"""
 
 model_name = 'uic_10.h5'
 

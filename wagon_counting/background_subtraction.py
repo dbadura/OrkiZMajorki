@@ -4,6 +4,12 @@ import cv2
 import os
 import argparse
 
+"""
+Script using background subtraction between current frame and background taken from first frame
+
+NOTE: Not implemented
+"""
+
 def get_difference(image, background):
     image_gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
     background_gray = cv2.cvtColor(background, cv2.COLOR_RGB2GRAY)

@@ -3,7 +3,12 @@ import cv2
 import os
 import argparse
 from wagon_counting import gap_cnn as pgc
-# from wagon_counting import pretrained_gap_cnn as pgc
+
+"""
+This script is used for counting wagons
+by using wagon gap detection model and algortihms
+for incrementing wagon number
+"""
 
 model = None
 actual_wagon = 'locomotive'
@@ -21,6 +26,10 @@ def parse_args():
 
 
 def increment_wagon(frame_skip):
+    """
+    Increment current wagon label
+    :param frame_skip: amount of initial frames to be skipped
+    """
     global actual_wagon
     global counter
 
@@ -32,6 +41,13 @@ def increment_wagon(frame_skip):
 
 
 def get_wagon_number(image, frame_skip):
+    """
+    Returns wagon label (wagon number or 'locomotive') for current frame
+    :param image: Frame with wagon
+    :param frame_skip: Number to initial frames to skip
+    :return: Wagon label
+    """
+
     global previous_result
     actual_result = contains_gap(image)
     if actual_result and not previous_result:
@@ -42,6 +58,10 @@ def get_wagon_number(image, frame_skip):
 
 
 def contains_gap(image):
+    """
+    Calls gap detection model, returns true if gap is detected
+    :param image: Frame with wagon
+    """
     global model
     result = False
 

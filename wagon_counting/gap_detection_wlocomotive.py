@@ -5,6 +5,13 @@ import argparse
 from wagon_counting import multiclass_gap_cnn as mcgc
 from wagon_counting import pretrained_multiclass_gap_cnn as pmcg
 
+"""
+Script with the same functionality as gap_detection, but
+using detection model with 3 classes : gap, locomotive, other
+
+NOTE: 3 classes model turned out to be uneffective, don't use this
+"""
+
 model = None
 actual_wagon = 'locomotive'
 previous_result = False
