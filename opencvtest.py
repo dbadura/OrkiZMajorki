@@ -4,6 +4,9 @@
 Created on Sat Nov 17 16:11:22 2018
 
 @author: dawid
+
+this code is not used in final solution
+just for testing different algoithms
 """
 
 import cv2 as cv
