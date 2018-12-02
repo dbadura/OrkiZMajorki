@@ -37,6 +37,15 @@ def extract_basic_data(image_path):
 
 
 def process(images, frame_skip=15, path=''):
+    """
+    Main function responsible for processing set of image
+    :param images: List with images' paths from one train ordered by occurrence
+    :param frame_skip: Number of frames after which detection of gaps is started
+    :param path: Not used
+    :return: nothing
+    """
+
+    # Get train number from name of image
     train_number = train_no_extractor.search(images[0])[0]
     train_number = train_number[1:len(train_number) - 1]
 
@@ -50,22 +59,22 @@ def process(images, frame_skip=15, path=''):
 
     images_output = list()
     wagons = 0
+
+    # Main loop for image processing
     for image_path in images:
         output = extract_basic_data(image_path)
         img = cv2.imread(image_path)
 
         start = time.time()
 
-
         type = gap_detection.get_wagon_number(image=img, frame_skip=frame_skip)
         if type == 'locomotive':
             output.uic_0_1 = type
-
         else:
             output.wagon = type
 
         uic = uic_finder.predict(img)
-        if uic != 0:  # uic not found
+        if uic != 0:  # uic is found
             uic = ocr_test.get_UIC_from_photo(img)
 
         if uic == '':
